@@ -1,6 +1,6 @@
 # grunt-mthamlphp-vlz
 
-> Usinezaitsev/mthamlphp IDE compiler
+> Using with zaitsev/mthamlphp IDE compiler
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`

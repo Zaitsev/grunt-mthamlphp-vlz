@@ -14,12 +14,6 @@
         "url": "https://github.com/Zaitsev/grunt-haml-php-vlz/issues",
         "source": "https://github.com/Zaitsev/grunt-haml-php-vlz"
     },
-    "autoload": {
-        "classmap": ["vendor/mthamlphp/lib/MtHamlPHP/Node/Tag.php"],
-        "psr-0": {
-            "MtHamlPHP\\": "vendor/mthamlphp/lib/"
-        }
-    },
     "bin": ["bin/haml"],
     "keywords": [
         "gruntplugin",
