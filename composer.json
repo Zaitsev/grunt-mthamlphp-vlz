@@ -1,0 +1,34 @@
+{
+    "name": "Zaitsev/grunt-haml-php-vlz",
+    "description": "Compile! HAML templates using MtHaml, a PHP port of Haml.",
+    "version": "0.1.0",
+    "homepage": "https://github.com/Zaitsev/grunt-haml-php-vlz",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vlad Zaitsev",
+            "email": "vladzaitsev@gmail.com"
+        }
+    ],
+    "support": {
+        "url": "https://github.com/Zaitsev/grunt-haml-php-vlz/issues",
+        "source": "https://github.com/Zaitsev/grunt-haml-php-vlz"
+    },
+    "autoload": {
+        "classmap": ["vendor/mthamlphp/lib/MtHamlPHP/Node/Tag.php"],
+        "psr-0": {
+            "MtHamlPHP\\": "vendor/mthamlphp/lib/"
+        }
+    },
+    "bin": ["bin/haml"],
+    "keywords": [
+        "gruntplugin",
+        "grunt",
+        "haml",
+        "php",
+        "mthaml"
+    ],
+    "require": {
+        "zaitsev/mthamlphp": "dev-master"
+    }
+}

@@ -1,0 +1,6 @@
+.idea
+composer.lock
+node_modules
+npm-debug.log
+tmp
+vendor/

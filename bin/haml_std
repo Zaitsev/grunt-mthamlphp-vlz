@@ -1,0 +1,79 @@
+#!/usr/bin/env php
+<?php
+
+require dirname(__FILE__) . '/../vendor/autoload.php';
+
+function usage() {
+  global $argv;
+
+  fwrite(STDERR, "Usage: $argv[0] [-t target] [-w wrapperFile] -i <inputFile> [-o outputFile]\n");
+  exit(1);
+}
+
+function main($args) {
+
+//    $shortopts="i:o:t:w:";
+//    $options = getopt($shortopts);
+//
+//    if (count($options) < 2 || count($options) > 4)
+//    {
+//        usage();
+//    }
+//    if ($options['w'] !== false && !file_exists($options['w']))
+//    {
+//        fwrite(STDERR, "Unable to open wrapper file ".$options['w']."\n");
+//        exit(1);composer
+//    }
+//
+//    var_dump($options);
+//    exit;
+
+  array_shift($args);
+
+  $opts = getopt('t:');
+
+  if (isset($opts['t'])) {
+    $target = $opts['t'];
+    $args = array_slice($args, 2);
+  } else {
+    $target = 'php';
+  }
+
+
+  if (count($args) < 1 || count($args) > 2)
+    usage();
+
+
+
+    $haml_directive = new MtHamlPHP\Filter\Haml();
+  $haml = new MtHamlPHP\Environment($target, array(
+
+      'enable_escaper' => false
+      ,"cdata"=>false
+  )
+      ,array('haml'=>$haml_directive)
+  );
+
+  $input = @file_get_contents($args[0]);
+  if ($input === false) {
+    fwrite(STDERR, "Unable to open $args[0]\n");
+    exit(1);
+  }
+
+  try {
+    $output = $haml->compileString($input, $args[0]);
+  } catch (Exception $e) {
+    fwrite(STDERR, $e->getMessage() . "\n");
+    exit(1);
+  }
+
+  if (count($args) == 2) {
+    file_put_contents($args[1], $output);
+  } else {
+    echo $output;
+  }
+}
+
+main($argv);
+
+# vim: ft=php
