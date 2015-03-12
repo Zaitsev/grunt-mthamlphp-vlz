@@ -17,22 +17,28 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-mthamlphp-vlz');
 ```
 
-## The "mthamlphp_vlz" task
+## The "haml" task
 
 ### Overview
 In your project's Gruntfile, add a section named `mthamlphp_vlz` to the data object passed into `grunt.initConfig()`.
 
 ```js
-grunt.initConfig({
-  mthamlphp_vlz: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
-});
+grunt.initConfig(
+    {
+        haml: {
+            compile: {
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: ['**/*.haml'],
+                    dest: 'dst/',
+                    ext: '.php'
+                }]
+            }
+        }
+
+    }
+);
 ```
 
 ### Options
@@ -56,7 +62,7 @@ In this example, the default options are used to do something with whatever. So 
 
 ```js
 grunt.initConfig({
-  mthamlphp_vlz: {
+  haml: {
     options: {},
     files: {
       'dest/default_options': ['src/testing', 'src/123'],
@@ -70,7 +76,7 @@ In this example, custom options are used to do something else with whatever else
 
 ```js
 grunt.initConfig({
-  mthamlphp_vlz: {
+  haml: {
     options: {
       separator: ': ',
       punctuation: ' !!!',
@@ -86,4 +92,4 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+1.0.0 - initial commit of grunt task to use with [zaitsev/mthamlphp](https://github.com/Zaitsev/MtHamlPHP)  
