@@ -51,6 +51,10 @@ function main($args)
     $params = json_decode(trim($opts['p']) ? $opts['p'] : '{}');
     $input_file = $opts['i'] ? trim($opts['i']) : false;
     $output_file = $opts['o'] ? trim($opts['o']) : false;
+
+//    var_dump($params);
+//  echo (@date('H:i:s')); exit(0);
+
     if (!$input_file) {
         usage();
     }
@@ -59,9 +63,8 @@ function main($args)
         $options = array_merge($options, (array)$params->options);
     }
 
-//    var_dump($params);
+//    var_dump($opts['p']);
 //    echo (@date('H:i:s')); exit(0);
-
 
     $input = @file_get_contents($input_file);
     if ($input === false) {

@@ -1,1 +1,1 @@
-@php %~p0\haml %1 %2 %3
+@php %~p0\haml %*
