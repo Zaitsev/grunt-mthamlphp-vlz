@@ -8,78 +8,90 @@
 
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
-  var async = require('async');
-  var path = require('path');
+    var async = require('async');
+    var path = require('path');
 
-  var hamlTarget;
+    var hamlTarget;
+    var hamlOpts;
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
 
-  grunt.registerMultiTask('haml', 'Process HAML templates using MtHaml, a PHP port of Haml.', function() {
-    var done = this.async();
+    // Please see the Grunt documentation for more information regarding task
+    // creation: http://gruntjs.com/creating-tasks
 
-    var options = this.options({
-      writeError: true,
-      separator: grunt.util.linefeed,
-      target: 'php'
+    grunt.registerMultiTask('haml', 'Process HAML templates using MtHaml, a PHP port of Haml.', function () {
+        var done = this.async();
+
+        var options = this.options({
+            writeError: true,
+            separator: grunt.util.linefeed,
+            target: 'php'
+        });
+
+        hamlTarget = options.target  || 'php';
+        hamlOpts = options.haml_options || {};
+        grunt.verbose.writeflags(options, 'Options');
+
+        async.forEach(this.files, function (f, callback) {
+            var validFiles = removeInvalidFiles(f);
+
+            async.map(validFiles, compileHaml, function (err, results) {
+                if (err) {
+                    grunt.log.warn(err);
+                    if (options.writeError) {
+                        writeFile(f.dest, err);
+                    }
+                } else {
+                    writeFile(f.dest, results.join(grunt.util.normalizelf(options.separator)));
+                }
+                callback();
+            });
+        }, done);
     });
 
-    hamlTarget = options.target;
+    var compileHaml = function (item, cb) {
+        var ext = (process.platform === "win32") ? '.cmd' : '';
+        var child = grunt.util.spawn({
+            cmd: path.join(__dirname, '../bin/haml') + ext,
+            args: [
+                '-t '+hamlTarget,
+                '-p '+JSON.stringify(hamlOpts),
+                '-i '+item,
+            ]
+        }, function (error, result, code) {
+            cb(error, result.stdout);
+        });
+        //var child = grunt.util.spawn({
+        //    cmd: path.join(__dirname, '../bin/haml')+ext,
+        //    args: [
+        //        '-t',
+        //        hamlTarget || 'php',
+        //        item
+        //    ]
+        //}, function(error, result, code) {
+        //    cb(error, result.stdout);
+        //});
+    };
 
-    grunt.verbose.writeflags(options, 'Options');
+    var removeInvalidFiles = function (files) {
+        return files.src.filter(function (filepath) {
+            if (!grunt.file.exists(filepath)) {
+                grunt.log.warn('Source file "' + filepath + '" not found.');
+                return false;
+            } else {
+                return true;
+            }
+        });
+    };
 
-    async.forEach(this.files, function(f, callback) {
-      var validFiles = removeInvalidFiles(f);
-
-      async.map(validFiles, compileHaml, function(err, results) {
-        if (err) {
-          grunt.log.warn(err);
-          if (options.writeError) {
-            writeFile(f.dest, err);
-          }
+    var writeFile = function (path, output) {
+        if (output.length < 1) {
+            grunt.log.warn('Destination (' + path + ') not written because compiled files were empty.');
         } else {
-          writeFile(f.dest, results.join(grunt.util.normalizelf(options.separator)));
+            grunt.file.write(path, output);
+            grunt.log.writeln('File ' + path.cyan + ' created.');
         }
-        callback();
-      });
-    }, done);
-  });
-
-  var compileHaml = function(item, cb) {
-    var ext = (process.platform === "win32") ? '.cmd' : '';
-    var child = grunt.util.spawn({
-      cmd: path.join(__dirname, '../bin/haml')+ext,
-      args: [
-        '-t',
-        hamlTarget || 'php',
-        item
-      ]
-    }, function(error, result, code) {
-      cb(error, result.stdout);
-    });
-  };
-
-  var removeInvalidFiles = function(files) {
-    return files.src.filter(function(filepath) {
-      if (!grunt.file.exists(filepath)) {
-        grunt.log.warn('Source file "' + filepath + '" not found.');
-        return false;
-      } else {
-        return true;
-      }
-    });
-  };
-
-  var writeFile = function(path, output) {
-    if (output.length < 1) {
-      grunt.log.warn('Destination (' + path + ') not written because compiled files were empty.');
-    } else {
-      grunt.file.write(path, output);
-      grunt.log.writeln('File ' + path.cyan + ' created.');
-    }
-  };
+    };
 
 };

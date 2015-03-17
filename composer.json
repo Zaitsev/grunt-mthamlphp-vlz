@@ -23,6 +23,10 @@
         "mthaml"
     ],
     "require": {
-        "zaitsev/mthamlphp": "dev-master"
+        "zaitsev/mthamlphp": "~1.0.5",
+        "coffeescript/coffeescript": "~1.3",
+        "kzykhys/ciconia": "~1.0",
+        "michelf/php-markdown": "~1.5",
+        "leafo/lessphp": "0.5.*"
     }
 }

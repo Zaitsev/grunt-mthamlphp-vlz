@@ -27,6 +27,9 @@ grunt.initConfig(
     {
         haml: {
             compile: {
+                options: {
+                    haml_options:{options:{enable_escaper:false},filters:['less','coffee','markdown']}
+                },            
                 files: [{
                     expand: true,
                     cwd: 'src/',
@@ -88,6 +91,35 @@ grunt.initConfig({
 });
 ```
 
+#### engine options
+in this example, haml engine options user to add filters and pass some of MtHaml Enviroment options
+
+`haml_options.options` used to pass MtHaml Enviroment options
+
+`haml_options.filters` used to turn on filters/parsers. These filters have runtime dependencies and are not enabled by default. use `composer require to install them. see more [MtHaml](https://github.com/arnaud-lb/MtHaml).
+
+ 
+```js
+grunt.initConfig(
+    {
+        haml: {
+            compile: {
+                options: {
+                    haml_options:{options:{enable_escaper:false},filters:['less','coffee','markdown']}
+                },            
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: ['**/*.haml'],
+                    dest: 'dst/',
+                    ext: '.php'
+                }]
+            }
+        }
+
+    }
+);
+```
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 

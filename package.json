@@ -1,7 +1,7 @@
 {
   "name": "grunt-mthamlphp-vlz",
   "description": "Usinezaitsev/mthamlphp IDE compiler",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/Zaitsev/grunt-mthamlphp-vlz",
   "author": {
     "name": "Vlad Zaitsev",
@@ -47,6 +47,7 @@
     "mthaml"
   ],
   "dependencies": {
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "grunt-exec":"*"
   }
 }
