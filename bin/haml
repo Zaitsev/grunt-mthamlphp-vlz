@@ -3,14 +3,16 @@
 
 require dirname(__FILE__) . '/../vendor/autoload.php';
 
-function usage() {
-  global $argv;
+function usage()
+{
+    global $argv;
 
-  fwrite(STDERR, "Usage: $argv[0] [-t target] [-w wrapperFile] -i <inputFile> [-o outputFile]\n");
-  exit(1);
+    fwrite(STDERR, "Usage: $argv[0] [-t target] [-w wrapperFile] -i <inputFile> [-o outputFile]\n");
+    exit(1);
 }
 
-function main($args) {
+function main($args)
+{
 
 //    $shortopts="i:o:t:w:";
 //    $options = getopt($shortopts);
@@ -28,57 +30,99 @@ function main($args) {
 //    var_dump($options);
 //    exit;
 
-  array_shift($args);
+//  array_shift($args);
+//
+//  $opts = getopt('t:');
+//
+//  if (isset($opts['t'])) {
+//    $target = $opts['t'];
+//    $args = array_slice($args, 2);
+//  } else {
+//    $target = 'php';
+//  }
 
-  $opts = getopt('t:');
+    $options = array(
+        'enable_escaper' => false
+    , "cdata" => false
+    );
 
-  if (isset($opts['t'])) {
-    $target = $opts['t'];
-    $args = array_slice($args, 2);
-  } else {
-    $target = 'php';
-  }
+    $opts = getopt('t::i:o::p::');
+    $target = trim($opts['t'] ? $opts['t'] : 'php');
+    $params = json_decode(trim($opts['p']) ? $opts['p'] : '{}');
+    $input_file = $opts['i'] ? trim($opts['i']) : false;
+    $output_file = $opts['o'] ? trim($opts['o']) : false;
+    if (!$input_file) {
+        usage();
+    }
+
+    if (!empty($params->options)) {
+        $options = array_merge($options, (array)$params->options);
+    }
+
+//    var_dump($params);
+//    echo (@date('H:i:s')); exit(0);
 
 
-  if (count($args) < 1 || count($args) > 2)
-    usage();
-
-
-    $input = @file_get_contents($args[0]);
+    $input = @file_get_contents($input_file);
     if ($input === false) {
-        fwrite(STDERR, "Unable to open $args[0]\n");
+        fwrite(STDERR, "Unable to open $input_file\n");
         exit(1);
     }
 
 
-  $options =  array(
-      'enable_escaper' => false
-      ,"cdata"=>false
-  );
-  $haml = new MtHamlPHP\Environment('php_more',$options);
-  $more_options = array(
-      'uses'=>array(dirname($args[0]).'/snips.php'),
-      'filename'=>$args[0],
-      'reduce_runtime'=>true,
-      "reduce_runtime_array_tolerant"=>false,
-      'prepare'=>true,
-      //'debug'=>false
-  );
+    $haml = new MtHamlPHP\Environment('php_more', $options);
+    if (!empty($params->filters)) {
+        foreach ($params->filters as $f) {
+            if ('less' == strtolower($f)) {
+                if (!class_exists('lessc')) {
+                    fwrite(STDERR, "Less filter have runtime dependencies, try install it: \ncomposer require leafo/lessphp\nor\ncomposer require oyejorge/less.php ");
+                    exit(1);
+                }
+                $haml->addFilter('less', new MtHaml\Filter\Less(new lessc));
+            }
+            if ('coffee' == strtolower($f) || 'coffeescript' == strtolower($f)) {
+                if (!class_exists('CoffeeScript\Compiler')) {
+                    fwrite(STDERR, "CoffeeScript filter  have runtime dependencies, try install it:\ncomposer require coffeescript/coffeescript
+                    ");
+                    exit(1);
+                }
+                $haml->addFilter('coffee', new MtHaml\Filter\CoffeeScript(new CoffeeScript\Compiler));
+            }
+            if ('markdown' == strtolower($f)) {
+                if (!class_exists('Michelf\Markdown')) {
+                    fwrite(STDERR, "markdown filter  have runtime dependencies, try install one of following:
+composer require michelf/php-markdown
+                    ");
+                    exit(1);
+                }
+                $haml->addFilter('markdown', new MtHaml\Filter\Markdown(new Michelf\Markdown));
+            }
+
+        }
+    }
+
+    $more_options = array(
+        'uses' => array(dirname($input_file) . '/snips.php'),
+        'filename' => $input_file,
+        'reduce_runtime' => true,
+        "reduce_runtime_array_tolerant" => false,
+        'prepare' => true,
+        //'debug'=>false
+    );
 
 
+    try {
+        $output = $haml->compileString($input, $more_options);
+    } catch (Exception $e) {
+        fwrite(STDERR, $e->getMessage() . "\n");
+        exit(1);
+    }
 
-  try {
-    $output = $haml->compileString($input, $more_options);
-  } catch (Exception $e) {
-    fwrite(STDERR, $e->getMessage() . "\n");
-    exit(1);
-  }
-
-  if (count($args) == 2) {
-    file_put_contents($args[1], $output);
-  } else {
-    echo $output;
-  }
+    if (count($args) == 2) {
+        file_put_contents($args[1], $output);
+    } else {
+        echo $output;
+    }
 }
 
 main($argv);

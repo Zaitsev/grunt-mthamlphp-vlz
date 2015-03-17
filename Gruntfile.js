@@ -27,9 +27,22 @@ module.exports = function(grunt) {
     clean: {
       tests: ['tmp']
     },
-    
+
     // Configuration to be run (and then tested).
     haml: {
+        compile: {
+            options: {
+                haml_options:{options:{enable_escaper:false},filters:['less','coffee','markdown']}
+            },
+
+            files: [{
+                expand: true,
+                cwd: 'test-idea-watcher/',
+                src: ['**/*.haml'],
+                dest: 'test-idea-watcher/',
+                ext: '.php'
+            }]
+        },
       basic_html: {
         options: {
         },
@@ -79,7 +92,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'mthamlphp_vlz', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'haml', 'nodeunit']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);

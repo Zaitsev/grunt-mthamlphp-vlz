@@ -47,6 +47,7 @@
     "mthaml"
   ],
   "dependencies": {
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "grunt-exec":"*"
   }
 }
