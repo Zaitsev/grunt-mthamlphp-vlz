@@ -7,7 +7,7 @@ function usage()
 {
     global $argv;
 
-    fwrite(STDERR, "Usage: $argv[0] [-t target] [-w wrapperFile] -i <inputFile> [-o outputFile]\n");
+    fwrite(STDERR, "Usage: [-t target] [-p JSON string with params] -i <inputFile> [-o outputFile]\n");
     exit(1);
 }
 
@@ -47,7 +47,7 @@ function main($args)
     );
 
     $opts = getopt('t::i:o::p::');
-    $target = trim($opts['t'] ? $opts['t'] : 'php');
+    $target = trim($opts['t'] ? $opts['t'] : 'php_more');
     $params = json_decode(trim($opts['p']) ? $opts['p'] : '{}');
     $input_file = $opts['i'] ? trim($opts['i']) : false;
     $output_file = $opts['o'] ? trim($opts['o']) : false;
@@ -73,7 +73,7 @@ function main($args)
     }
 
 
-    $haml = new MtHamlPHP\Environment('php_more', $options);
+    $haml = new MtHamlPHP\Environment($target, $options);
     if (!empty($params->filters)) {
         foreach ($params->filters as $f) {
             if ('less' == strtolower($f)) {
@@ -121,8 +121,8 @@ composer require michelf/php-markdown
         exit(1);
     }
 
-    if (count($args) == 2) {
-        file_put_contents($args[1], $output);
+    if ($output_file !== false) {
+        file_put_contents($output_file, $output);
     } else {
         echo $output;
     }
