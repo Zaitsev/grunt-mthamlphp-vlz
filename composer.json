@@ -23,7 +23,7 @@
         "mthaml"
     ],
     "require": {
-        "zaitsev/mthamlphp": "~1.0.5",
+        "zaitsev/mthamlphp": "~1.1",
         "coffeescript/coffeescript": "~1.3",
         "kzykhys/ciconia": "~1.0",
         "michelf/php-markdown": "~1.5",
