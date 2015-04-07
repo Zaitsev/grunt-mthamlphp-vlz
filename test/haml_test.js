@@ -36,13 +36,7 @@ exports.haml = {
 
     test.done();
   },
-  invalid: function(test) {
-    test.expect(1);
 
-    test.ok(!grunt.file.exists('tmp/invalid.html'), 'Empty file on error should not exist');
-
-    test.done();
-  },
   invalidWrite: function(test) {
     test.expect(1);
 
@@ -70,4 +64,13 @@ exports.haml = {
 
     test.done();
   },
+    filter: function(test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/filter.html');
+        var expected = grunt.file.read('test/expected/filter.html');
+        test.equal(actual, expected, 'Should compile haml with less, markdown, coffee');
+
+        test.done();
+    }
 };

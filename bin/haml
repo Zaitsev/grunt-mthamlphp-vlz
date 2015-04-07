@@ -14,46 +14,17 @@ function usage()
 function main($args)
 {
 
-//    $shortopts="i:o:t:w:";
-//    $options = getopt($shortopts);
-//
-//    if (count($options) < 2 || count($options) > 4)
-//    {
-//        usage();
-//    }
-//    if ($options['w'] !== false && !file_exists($options['w']))
-//    {
-//        fwrite(STDERR, "Unable to open wrapper file ".$options['w']."\n");
-//        exit(1);composer
-//    }
-//
-//    var_dump($options);
-//    exit;
-
-//  array_shift($args);
-//
-//  $opts = getopt('t:');
-//
-//  if (isset($opts['t'])) {
-//    $target = $opts['t'];
-//    $args = array_slice($args, 2);
-//  } else {
-//    $target = 'php';
-//  }
-
     $options = array(
         'enable_escaper' => false
     , "cdata" => false
     );
 
     $opts = getopt('t::i:o::p::');
-    $target = trim($opts['t'] ? $opts['t'] : 'php_more');
+    $target = trim($opts['t'] ? $opts['t'] : 'php');
     $params = json_decode(trim($opts['p']) ? $opts['p'] : '{}');
     $input_file = $opts['i'] ? trim($opts['i']) : false;
     $output_file = $opts['o'] ? trim($opts['o']) : false;
 
-//    var_dump($params);
-//  echo (@date('H:i:s')); exit(0);
 
     if (!$input_file) {
         usage();
@@ -81,7 +52,7 @@ function main($args)
                     fwrite(STDERR, "Less filter have runtime dependencies, try install it: \ncomposer require leafo/lessphp\nor\ncomposer require oyejorge/less.php ");
                     exit(1);
                 }
-                $haml->addFilter('less', new MtHaml\Filter\Less\LeafoLess(new lessc));
+                $haml->addFilter('less', new MtHaml\Filter\Less\LeafoLess(new \lessc));
             }
             if ('coffee' == strtolower($f) || 'coffeescript' == strtolower($f)) {
                 if (!class_exists('CoffeeScript\Compiler')) {
