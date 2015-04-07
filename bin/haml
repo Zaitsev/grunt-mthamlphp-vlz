@@ -81,7 +81,7 @@ function main($args)
                     fwrite(STDERR, "Less filter have runtime dependencies, try install it: \ncomposer require leafo/lessphp\nor\ncomposer require oyejorge/less.php ");
                     exit(1);
                 }
-                $haml->addFilter('less', new MtHaml\Filter\Less(new lessc));
+                $haml->addFilter('less', new MtHaml\Filter\Less\LeafoLess(new lessc));
             }
             if ('coffee' == strtolower($f) || 'coffeescript' == strtolower($f)) {
                 if (!class_exists('CoffeeScript\Compiler')) {
@@ -98,7 +98,7 @@ composer require michelf/php-markdown
                     ");
                     exit(1);
                 }
-                $haml->addFilter('markdown', new MtHaml\Filter\Markdown(new Michelf\Markdown));
+                $haml->addFilter('markdown', new MtHaml\Filter\Markdown\MichelfMarkdown(new Michelf\Markdown));
             }
 
         }
