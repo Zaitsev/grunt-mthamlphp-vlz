@@ -62,16 +62,6 @@ module.exports = function (grunt) {
         }, function (error, result, code) {
             cb(error, result.stdout);
         });
-        //var child = grunt.util.spawn({
-        //    cmd: path.join(__dirname, '../bin/haml')+ext,
-        //    args: [
-        //        '-t',
-        //        hamlTarget || 'php',
-        //        item
-        //    ]
-        //}, function(error, result, code) {
-        //    cb(error, result.stdout);
-        //});
     };
 
     var removeInvalidFiles = function (files) {
